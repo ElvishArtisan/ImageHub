@@ -66,6 +66,15 @@ MainWidget::MainWidget(QWidget *parent)
   // Dialogs
   //
   hub_settings_dialog=new EditSettingsDialog(this);
+  hub_list_images_dialog=new ListImagesDialog(this);
+
+  //
+  // Manage Images Button
+  //
+  hub_list_images_button=new QPushButton(tr("Manage Images"),this);
+  hub_list_images_button->setFont(label_font);
+  connect(hub_list_images_button,SIGNAL(clicked()),
+	  hub_list_images_dialog,SLOT(exec()));
 
   //
   // Edit Settings Button
@@ -98,7 +107,10 @@ void MainWidget::closeEvent(QCloseEvent *e)
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
-  hub_edit_settings_button->setGeometry(45,10,size().width()-90,60);
+  hub_list_images_button->setGeometry(45,10,size().width()-90,60);
+
+  hub_edit_settings_button->setGeometry(45,80,size().width()-90,60);
+
   hub_close_button->setGeometry(45,196,size().width()-90,60);
 }
 
@@ -178,7 +190,9 @@ bool MainWidget::CheckSchema()
     sql=QString("create table IMAGES (")+
       "ID integer primary key auto_increment,"+
       "FILENAME char(255) unique not null,"+
-      "TYPE enum('I','R') not null,"+
+      "TYPE int not null,"+
+      "SIZE int,"+
+      "SHA1_HASH char(40),"+
       "NOTES text,"+
       "index FILENAME_IDX(FILENAME))"+
       hub_config->createTablePostfix();
@@ -190,7 +204,7 @@ bool MainWidget::CheckSchema()
     sql=QString("create table FILESYSTEMS (")+
       "ID integer primary key auto_increment,"+
       "DIRECTORY char(255) unique not null,"+
-      "TYPE enum('B','R') not null,"+
+      "TYPE int not null,"+
       "NOTES text,"+
       "index DIRECTORY_IDX(DIRECTORY),"+
       "index TYPE_IDX(TYPE))"+

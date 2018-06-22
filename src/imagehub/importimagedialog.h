@@ -1,6 +1,6 @@
-// imagehub.h
+// importimagedialog.h
 //
-// imagehub(1)
+// Import an existing image into ImageHub
 //
 //   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,41 +18,45 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef IMAGEHUB_H
-#define IMAGEHUB_H
+#ifndef IMPORTIMAGEDIALOG_H
+#define IMPORTIMAGEDIALOG_H
 
+#include <QCheckBox>
+#include <QDialog>
 #include <QLabel>
-#include <QMainWindow>
+#include <QLineEdit>
 #include <QPushButton>
+#include <QResizeEvent>
 
-#include "config.h"
-#include "editsettingsdialog.h"
-#include "listimagesdialog.h"
+#include "combobox.h"
 
-#define IMAGEHUB_USAGE "\n"
-
-class MainWidget : public QMainWindow
+class ImportImageDialog : public QDialog
 {
- Q_OBJECT;
+  Q_OBJECT
  public:
-  MainWidget(QWidget *parent=0);
+  ImportImageDialog(QWidget *parent=0);
   QSize sizeHint() const;
+  
+ private slots:
+  void selectFilenameData();
+  void okData();
+  void cancelData();
 
  protected:
-  void closeEvent(QCloseEvent *e);
   void resizeEvent(QResizeEvent *e);
 
  private:
-  bool CheckDb(QString *err_msg);
-  bool CreateDb();
-  bool CheckSchema();
-  EditSettingsDialog *hub_settings_dialog;
-  ListImagesDialog *hub_list_images_dialog;
-  QPushButton *hub_list_images_button;
-  QPushButton *hub_edit_settings_button;
-  QPushButton *hub_close_button;
-  Config *hub_config;
+  QLabel *d_filename_label;
+  QLineEdit *d_filename_edit;
+  QPushButton *d_filename_button;
+  QLabel *d_type_label;
+  ComboBox *d_type_box;
+  QCheckBox *d_delete_check;
+  QLabel *d_delete_label;
+  QPushButton *d_ok_button;
+  QPushButton *d_cancel_button;
 };
 
 
-#endif  // IMAGEHUB_H
+#endif  // IMPORTIMAGEDIRECTORY_H
+

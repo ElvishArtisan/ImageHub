@@ -131,3 +131,49 @@ bool Config::openDb(QString *err_msg,bool schema_check)
   *err_msg=QObject::tr("OK");
   return true;
 }
+
+
+QString Config::typeString(Config::ImageType type)
+{
+  QString ret=QObject::tr("Unknown");
+
+  switch(type) {
+  case Config::BootImage:
+    ret=QObject::tr("Boot");
+    break;
+
+  case Config::InstallableImage:
+    ret=QObject::tr("Installable");
+    break;
+
+  case Config::RawImage:
+    ret=QObject::tr("Raw");
+    break;
+
+  case Config::LastImage:
+    break;
+  }
+
+  return ret;
+}
+
+
+QString Config::typeString(Config::FilesystemType type)
+{
+  QString ret=QObject::tr("Unknown");
+
+  switch(type) {
+  case Config::BootFilesystem:
+    ret=QObject::tr("Boot");
+    break;
+
+  case Config::RootFilesystem:
+    ret=QObject::tr("Root");
+    break;
+
+  case Config::LastFilesystem:
+    break;
+  }
+
+  return ret;
+}

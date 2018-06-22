@@ -36,6 +36,8 @@
 class Config
 {
  public:
+  enum ImageType {BootImage=0,InstallableImage=1,RawImage=2,LastImage=3};
+  enum FilesystemType {BootFilesystem=0,RootFilesystem=1,LastFilesystem=2};
   Config();
   QString mysqlHostname() const;
   QString mysqlDbname() const;
@@ -46,6 +48,8 @@ class Config
   QString mysqlCollation() const;
   QString createTablePostfix() const;
   bool openDb(QString *err_msg,bool schema_check);
+  static QString typeString(ImageType type);
+  static QString typeString(FilesystemType type);
 
  private:
   QString config_mysql_hostname;

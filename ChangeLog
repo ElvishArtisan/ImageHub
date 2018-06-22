@@ -2,3 +2,5 @@
 	* Initial package creation.
 2018-06-22 Fred Gleason <fredg@paravelsystems.com>
 	* Added an 'Edit Settings' dialog to imagehub(1).
+2018-06-22 Fred Gleason <fredg@paravelsystems.com>
+	* Stubbed out image importation.

@@ -57,6 +57,11 @@ AC_CHECK_PROG(MOC_NAME,moc-qt4,[moc-qt4],[moc])
 AC_SUBST(MOC,$MOC_NAME)
 
 #
+# Check for OpenSSL (Mandatory)
+#
+PKG_CHECK_MODULES(OPENSSL,openssl,[],[AC_MSG_ERROR([*** OpenSSL not found ***])])
+
+#
 # Check for DocBook Toolchain
 #
 if test -z $DOCBOOK_DISABLED ; then
@@ -95,6 +100,7 @@ else
 fi 
 
 AC_CONFIG_FILES([ \
+    icons/Makefile \
     src/Makefile \
     src/imagehub/Makefile \
     Makefile ])

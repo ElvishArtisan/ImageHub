@@ -1,6 +1,6 @@
-// imagehub.h
+// listdialog.h
 //
-// imagehub(1)
+// Base class for listing dialogs
 //
 //   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,41 +18,32 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef IMAGEHUB_H
-#define IMAGEHUB_H
+#ifndef LISTDIALOG_H
+#define LISTDIALOG_H
 
+#include <QDialog>
 #include <QLabel>
-#include <QMainWindow>
-#include <QPushButton>
+#include <QPixmap>
+#include <QResizeEvent>
 
-#include "config.h"
-#include "editsettingsdialog.h"
-#include "listimagesdialog.h"
-
-#define IMAGEHUB_USAGE "\n"
-
-class MainWidget : public QMainWindow
+class ListDialog : public QDialog
 {
- Q_OBJECT;
+  Q_OBJECT
  public:
-  MainWidget(QWidget *parent=0);
-  QSize sizeHint() const;
+  ListDialog(QWidget *parent=0);
+  
+ public slots:
+  void setServiceState(bool state);
 
  protected:
-  void closeEvent(QCloseEvent *e);
   void resizeEvent(QResizeEvent *e);
 
  private:
-  bool CheckDb(QString *err_msg);
-  bool CreateDb();
-  bool CheckSchema();
-  EditSettingsDialog *hub_settings_dialog;
-  ListImagesDialog *hub_list_images_dialog;
-  QPushButton *hub_list_images_button;
-  QPushButton *hub_edit_settings_button;
-  QPushButton *hub_close_button;
-  Config *hub_config;
+  QLabel *list_health_text_label;
+  QLabel *list_health_icon_label;
+  QPixmap *list_greenball_pixmap;
+  QPixmap *list_redball_pixmap;
 };
 
 
-#endif  // IMAGEHUB_H
+#endif  // LISTDIALOG_H

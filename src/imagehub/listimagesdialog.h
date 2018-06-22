@@ -1,6 +1,6 @@
-// imagehub.h
+// listimagesdialog.h
 //
-// imagehub(1)
+// List ImageHub images.
 //
 //   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,41 +18,47 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef IMAGEHUB_H
-#define IMAGEHUB_H
+#ifndef LISTIMAGESDIALOG_H
+#define LISTIMAGESDIALOG_H
 
-#include <QLabel>
-#include <QMainWindow>
 #include <QPushButton>
+#include <QResizeEvent>
+#include <QTableView>
+#include <QTimer>
 
-#include "config.h"
-#include "editsettingsdialog.h"
-#include "listimagesdialog.h"
+#include "importimagedialog.h"
+#include "imagesmodel.h"
+#include "listdialog.h"
 
-#define IMAGEHUB_USAGE "\n"
-
-class MainWidget : public QMainWindow
+class ListImagesDialog : public ListDialog
 {
- Q_OBJECT;
+  Q_OBJECT
  public:
-  MainWidget(QWidget *parent=0);
+  ListImagesDialog(QWidget *parent=0);
+  ~ListImagesDialog();
   QSize sizeHint() const;
+  
+ public slots:
+  int exec();
+
+ private slots:
+  void importData();
+  void decantData();
+  void deleteData();
+  void closeData();
 
  protected:
-  void closeEvent(QCloseEvent *e);
   void resizeEvent(QResizeEvent *e);
 
  private:
-  bool CheckDb(QString *err_msg);
-  bool CreateDb();
-  bool CheckSchema();
-  EditSettingsDialog *hub_settings_dialog;
-  ListImagesDialog *hub_list_images_dialog;
-  QPushButton *hub_list_images_button;
-  QPushButton *hub_edit_settings_button;
-  QPushButton *hub_close_button;
-  Config *hub_config;
+  ImportImageDialog *d_import_image_dialog;
+  ImagesModel *list_model;
+  QTableView *list_view;
+  QPushButton *list_import_button;
+  QPushButton *list_decant_button;
+  QPushButton *list_delete_button;
+  QPushButton *list_close_button;
 };
 
 
-#endif  // IMAGEHUB_H
+#endif  // LISTEVENTS_H

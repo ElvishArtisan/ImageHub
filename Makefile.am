@@ -25,7 +25,8 @@
 ##endif
 
 ##SUBDIRS = $(DOCBOOK_AM_OPT) src
-SUBDIRS = src
+SUBDIRS = icons\
+          src
 
 install-exec-local:	
 	mkdir -p $(DESTDIR)/var/gncd

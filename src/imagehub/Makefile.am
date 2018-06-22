@@ -20,7 +20,7 @@
 ##
 ## Use automake to process this into a Makefile.in
 
-AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing @QT4GUI_CFLAGS@
+AM_CPPFLAGS = -Wall -DPREFIX=\"$(prefix)\" -Wno-strict-aliasing @QT4GUI_CFLAGS@ @OPENSSL_CFLAGS@
 MOC = @QT4_MOC@
 
 # The dependency for qt's Meta Object Compiler (moc)
@@ -31,16 +31,28 @@ moc_%.cpp:	%.h
 bin_PROGRAMS = imagehub
 
 dist_imagehub_SOURCES = cmdswitch.cpp cmdswitch.h\
+                        combobox.cpp combobox.h\
                         config.cpp config.h\
                         db.cpp db.h\
                         editsettingsdialog.cpp editsettingsdialog.h\
-                        imagehub.cpp imagehub.h
+                        imagehub.cpp imagehub.h\
+                        imagesmodel.cpp imagesmodel.h\
+                        importimagedialog.cpp importimagedialog.h\
+                        listdialog.cpp listdialog.h\
+                        listimagesdialog.cpp listimagesdialog.h\
+                        sqltablemodel.cpp sqltablemodel.h
 
-nodist_imagehub_SOURCES = moc_db.cpp\
+nodist_imagehub_SOURCES = moc_combobox.cpp\
+                          moc_db.cpp\
                           moc_editsettingsdialog.cpp\
-                          moc_imagehub.cpp
+                          moc_imagehub.cpp\
+                          moc_imagesmodel.cpp\
+                          moc_importimagedialog.cpp\
+                          moc_listdialog.cpp\
+                          moc_listimagesdialog.cpp\
+                          moc_sqltablemodel.cpp
 
-imagehub_LDADD = @QT4GUI_LIBS@
+imagehub_LDADD = @QT4GUI_LIBS@ @OPENSSL_LIBS@
 
 CLEANFILES = *~\
              moc_*\
