@@ -65,6 +65,15 @@ MainWidget::MainWidget(QWidget *parent)
   //
   // Dialogs
   //
+  hub_settings_dialog=new EditSettingsDialog(this);
+
+  //
+  // Edit Settings Button
+  //
+  hub_edit_settings_button=new QPushButton(tr("Edit Settings"),this);
+  hub_edit_settings_button->setFont(label_font);
+  connect(hub_edit_settings_button,SIGNAL(clicked()),
+	  hub_settings_dialog,SLOT(exec()));
 
   //
   // Close Button
@@ -89,6 +98,7 @@ void MainWidget::closeEvent(QCloseEvent *e)
 
 void MainWidget::resizeEvent(QResizeEvent *e)
 {
+  hub_edit_settings_button->setGeometry(45,10,size().width()-90,60);
   hub_close_button->setGeometry(45,196,size().width()-90,60);
 }
 

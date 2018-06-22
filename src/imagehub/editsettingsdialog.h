@@ -1,6 +1,6 @@
-// imagehub.h
+// editsettingsdialog.h
 //
-// imagehub(1)
+// Edit ImageHub Settings
 //
 //   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,38 +18,47 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef IMAGEHUB_H
-#define IMAGEHUB_H
+#ifndef EDITSETTINGSDIALOG_H
+#define EDITSETTINGSDIALOG_H
 
+#include <QDialog>
 #include <QLabel>
-#include <QMainWindow>
+#include <QLineEdit>
 #include <QPushButton>
+#include <QResizeEvent>
 
-#include "config.h"
-#include "editsettingsdialog.h"
-
-#define IMAGEHUB_USAGE "\n"
-
-class MainWidget : public QMainWindow
+class EditSettingsDialog : public QDialog
 {
- Q_OBJECT;
+  Q_OBJECT
  public:
-  MainWidget(QWidget *parent=0);
+  EditSettingsDialog(QWidget *parent=0);
   QSize sizeHint() const;
+  
+ public slots:
+  int exec();
+
+ private slots:
+  void selectImageDirectoryData();
+  void selectFilesystemDirectoryData();
+  void okData();
+  void cancelData();
 
  protected:
-  void closeEvent(QCloseEvent *e);
   void resizeEvent(QResizeEvent *e);
 
  private:
-  bool CheckDb(QString *err_msg);
-  bool CreateDb();
-  bool CheckSchema();
-  EditSettingsDialog *hub_settings_dialog;
-  QPushButton *hub_edit_settings_button;
-  QPushButton *hub_close_button;
-  Config *hub_config;
+  QLabel *d_card_device_label;
+  QLineEdit *d_card_device_edit;
+  QLabel *d_image_directory_label;
+  QLineEdit *d_image_directory_edit;
+  QPushButton *d_image_directory_button;
+  QLabel *d_filesystem_directory_label;
+  QLineEdit *d_filesystem_directory_edit;
+  QPushButton *d_filesystem_directory_button;
+  QPushButton *d_ok_button;
+  QPushButton *d_cancel_button;
 };
 
 
-#endif  // IMAGEHUB_H
+#endif  // EDITSETTINGSDIRECTORY_H
+

@@ -33,9 +33,11 @@ bin_PROGRAMS = imagehub
 dist_imagehub_SOURCES = cmdswitch.cpp cmdswitch.h\
                         config.cpp config.h\
                         db.cpp db.h\
+                        editsettingsdialog.cpp editsettingsdialog.h\
                         imagehub.cpp imagehub.h
 
 nodist_imagehub_SOURCES = moc_db.cpp\
+                          moc_editsettingsdialog.cpp\
                           moc_imagehub.cpp
 
 imagehub_LDADD = @QT4GUI_LIBS@
