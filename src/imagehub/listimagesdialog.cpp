@@ -18,10 +18,14 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
+#include <unistd.h>
+
 #include <QMessageBox>
 
-#include "listimagesdialog.h"
+#include "db.h"
 #include "imagesmodel.h"
+#include "listimagesdialog.h"
+#include "settings.h"
 
 ListImagesDialog::ListImagesDialog(QWidget *parent)
   : ListDialog(parent)
@@ -34,6 +38,7 @@ ListImagesDialog::ListImagesDialog(QWidget *parent)
   //
   // Dialogs
   //
+  d_edit_notes_dialog=new EditNotesDialog(this);
   d_import_image_dialog=new ImportImageDialog(this);
 
   //
@@ -41,11 +46,12 @@ ListImagesDialog::ListImagesDialog(QWidget *parent)
   //
   list_model=new ImagesModel(this);
   QString sql=QString("select ")+
-    "ID,"+        // 00
-    "FILENAME,"+  // 01
-    "TYPE,"+      // 02
-    "SIZE,"+      // 03
-    "SHA1_HASH "+ // 04
+    "ID,"+               // 00
+    "FILENAME,"+         // 01
+    "TYPE,"+             // 02
+    "SIZE,"+             // 03
+    "ORIGIN_DATETIME,"+  // 04
+    "SHA1_HASH "+        // 05
     "from IMAGES order by FILENAME";
   list_model->setQuery(sql);
   list_model->setHeaderData(0,Qt::Horizontal,tr("ID"));
@@ -53,24 +59,34 @@ ListImagesDialog::ListImagesDialog(QWidget *parent)
   list_model->setHeaderData(2,Qt::Horizontal,"Type");
   list_model->setFieldType(2,SqlTableModel::ImageType);
   list_model->setHeaderData(3,Qt::Horizontal,"Size");
-  list_model->setHeaderData(4,Qt::Horizontal,"SHA1 Hash");
-  list_view=new QTableView(this);
+  list_model->setHeaderData(4,Qt::Horizontal,"Origin DateTime");
+  list_model->setHeaderData(5,Qt::Horizontal,"SHA1 Hash");
+  list_view=new TableView(this);
   list_view->setModel(list_model);
   list_view->hideColumn(0);
   list_view->resizeColumnsToContents();
+  connect(list_view,SIGNAL(clicked(const QModelIndex &)),
+	  this,SLOT(listClickedData(const QModelIndex &)));
 
   list_import_button=new QPushButton(tr("Import"),this);
   list_import_button->setFont(bold_font);
   connect(list_import_button,SIGNAL(clicked()),
-	  d_import_image_dialog,SLOT(exec()));
+	  this,SLOT(importData()));
 
   list_decant_button=new QPushButton(tr("Decant"),this);
   list_decant_button->setFont(bold_font);
+  list_decant_button->setDisabled(true);
   connect(list_decant_button,SIGNAL(clicked()),this,SLOT(decantData()));
 
   list_delete_button=new QPushButton(tr("Delete"),this);
   list_delete_button->setFont(bold_font);
+  list_delete_button->setDisabled(true);
   connect(list_delete_button,SIGNAL(clicked()),this,SLOT(deleteData()));
+
+  list_notes_button=new QPushButton(tr("Edit")+"\n"+tr("Notes"),this);
+  list_notes_button->setFont(bold_font);
+  list_notes_button->setDisabled(true);
+  connect(list_notes_button,SIGNAL(clicked()),this,SLOT(notesData()));
 
   list_close_button=new QPushButton(tr("Close"),this);
   list_close_button->setFont(bold_font);
@@ -97,20 +113,19 @@ int ListImagesDialog::exec()
 }
 
 
+void ListImagesDialog::listClickedData(const QModelIndex &index)
+{
+  list_decant_button->setEnabled(index.isValid());
+  list_delete_button->setEnabled(index.isValid());
+  list_notes_button->setEnabled(index.isValid());
+}
+
+
 void ListImagesDialog::importData()
 {
-  /*
-  int event_id=-1;
-  if(list_editevent_dialog->exec(&event_id)) {
-    list_model->update();
-    list_view->resizeColumnsToContents();
-    list_view->select(0,event_id);
-  }
-  else {
-    Event::remove(event_id);
+  if(d_import_image_dialog->exec()) {
     list_model->update();
   }
-  */
 }
 
 
@@ -131,22 +146,48 @@ void ListImagesDialog::decantData()
 
 void ListImagesDialog::deleteData()
 {
-  /*
+  QString sql;
+
   QItemSelectionModel *s=list_view->selectionModel();
   if(s->hasSelection()) {
-    Event *event=new Event(s->selectedRows()[0].data().toInt());
-    if(QMessageBox::question(this,tr("GlassNet - Delete Event"),
+    int id=s->selectedRows()[0].data().toInt();
+    if(QMessageBox::question(this,tr("ImageHub - Delete Image"),
 			     tr("Are you sure you want to delete the")+
-			     " \""+event->feedName()+"\" "+tr("event?"),
-			     QMessageBox::Yes,QMessageBox::No)!=QMessageBox::Yes) {
-      delete event;
-      return;
+			     " \""+Settings::imageFilename(id)+"\" "+
+			     tr("image?"),
+			     QMessageBox::Yes,QMessageBox::No)==QMessageBox::Yes) {
+      unlink(Settings::imagePathname(id).toUtf8());
+      sql=QString("delete from IMAGES where ")+
+	QString().sprintf("ID=%d",id);
+      SqlQuery::run(sql);
+      list_model->update();
     }
-    Event::remove(event->id());
-    delete event;
-    list_model->update();
   }
-  */
+}
+
+
+void ListImagesDialog::notesData()
+{
+  QString sql;
+  SqlQuery *q;
+
+  QItemSelectionModel *s=list_view->selectionModel();
+  if(s->hasSelection()) {
+    int id=s->selectedRows()[0].data().toInt();
+    sql=QString("select NOTES from IMAGES where ")+
+      QString().sprintf("ID=%d",id);
+    q=new SqlQuery(sql);
+    if(q->first()) {
+      QString html=q->value(0).toString();
+      if(d_edit_notes_dialog->exec(&html)) {
+	sql=QString("update IMAGES set ")+
+	  "NOTES=\""+SqlQuery::escape(html)+"\" where "+
+	  QString().sprintf("ID=%d",id);
+	SqlQuery::run(sql);
+      }
+    }
+    delete q;
+  }
 }
 
 
@@ -163,6 +204,8 @@ void ListImagesDialog::resizeEvent(QResizeEvent *e)
   list_import_button->setGeometry(10,size().height()-60,80,50);
   list_decant_button->setGeometry(100,size().height()-60,80,50);
   list_delete_button->setGeometry(190,size().height()-60,80,50);
+
+  list_notes_button->setGeometry(400,size().height()-60,80,50);
 
   list_close_button->setGeometry(size().width()-90,size().height()-60,80,50);
 

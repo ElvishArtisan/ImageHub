@@ -4,3 +4,5 @@
 	* Added an 'Edit Settings' dialog to imagehub(1).
 2018-06-22 Fred Gleason <fredg@paravelsystems.com>
 	* Stubbed out image importation.
+2018-06-24 Fred Gleason <fredg@paravelsystems.com>
+	* Got image importation working.

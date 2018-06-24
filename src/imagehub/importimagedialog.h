@@ -27,6 +27,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QResizeEvent>
+#include <QTextEdit>
 
 #include "combobox.h"
 
@@ -37,6 +38,9 @@ class ImportImageDialog : public QDialog
   ImportImageDialog(QWidget *parent=0);
   QSize sizeHint() const;
   
+ public slots:
+  int exec();
+
  private slots:
   void selectFilenameData();
   void okData();
@@ -53,6 +57,8 @@ class ImportImageDialog : public QDialog
   ComboBox *d_type_box;
   QCheckBox *d_delete_check;
   QLabel *d_delete_label;
+  QLabel *d_notes_label;
+  QTextEdit *d_notes_edit;
   QPushButton *d_ok_button;
   QPushButton *d_cancel_button;
 };

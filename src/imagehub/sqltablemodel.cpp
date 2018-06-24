@@ -21,6 +21,7 @@
 #include <QColor>
 #include <QDateTime>
 
+#include "config.h"
 #include "db.h"
 #include "sqltablemodel.h"
 /*
@@ -94,25 +95,10 @@ QVariant SqlTableModel::data(const QModelIndex &index,int role) const
     value=model_display_datas[index.row()][index.column()];
     switch(fieldType(index.column())) {
     case SqlTableModel::ImageType:
-      if(value.toString()=="B") {
-	return QVariant(tr("Boot"));
-      }
-      if(value.toString()=="I") {
-	return QVariant(tr("Installable"));
-      }
-      if(value.toString()=="R") {
-	return QVariant(tr("Raw"));
-      }
-      return QVariant(tr("Unknown"));
+      return QVariant(Config::typeString((Config::ImageType)value.toInt()));
 
     case SqlTableModel::FilesystemType:
-      if(value.toString()=="B") {
-	return QVariant(tr("Boot"));
-      }
-      if(value.toString()=="R") {
-	return QVariant(tr("Root"));
-      }
-      return QVariant(tr("Unknown"));      
+      return QVariant(Config::typeString((Config::FilesystemType)value.toInt()));
 
     default:
       return value;

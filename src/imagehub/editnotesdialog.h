@@ -1,6 +1,6 @@
-// listimagesdialog.h
+// editnotesdialog.h
 //
-// List ImageHub images.
+// Edit Notes
 //
 //   (C) Copyright 2018 Fred Gleason <fredg@paravelsystems.com>
 //
@@ -18,52 +18,39 @@
 //   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 
-#ifndef LISTIMAGESDIALOG_H
-#define LISTIMAGESDIALOG_H
+#ifndef EDITNOTESDIALOG_H
+#define EDITNOTESDIALOG_H
 
+#include <QDialog>
+#include <QLabel>
 #include <QPushButton>
 #include <QResizeEvent>
-#include <QTimer>
+#include <QTextEdit>
 
-#include "editnotesdialog.h"
-#include "importimagedialog.h"
-#include "imagesmodel.h"
-#include "listdialog.h"
-#include "tableview.h"
-
-class ListImagesDialog : public ListDialog
+class EditNotesDialog : public QDialog
 {
   Q_OBJECT
  public:
-  ListImagesDialog(QWidget *parent=0);
-  ~ListImagesDialog();
+  EditNotesDialog(QWidget *parent=0);
   QSize sizeHint() const;
   
  public slots:
-  int exec();
+  int exec(QString *html);
 
  private slots:
-  void listClickedData(const QModelIndex &index);
-  void importData();
-  void decantData();
-  void deleteData();
-  void notesData();
-  void closeData();
+  void okData();
+  void cancelData();
 
  protected:
   void resizeEvent(QResizeEvent *e);
 
  private:
-  ImportImageDialog *d_import_image_dialog;
-  EditNotesDialog *d_edit_notes_dialog;
-  ImagesModel *list_model;
-  TableView *list_view;
-  QPushButton *list_import_button;
-  QPushButton *list_decant_button;
-  QPushButton *list_delete_button;
-  QPushButton *list_notes_button;
-  QPushButton *list_close_button;
+  QLabel *d_notes_label;
+  QTextEdit *d_notes_edit;
+  QPushButton *d_ok_button;
+  QPushButton *d_cancel_button;
+  QString *d_html;
 };
 
 
-#endif  // LISTEVENTS_H
+#endif  // EDITNOTESDIALOG_H

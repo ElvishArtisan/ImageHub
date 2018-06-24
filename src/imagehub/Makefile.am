@@ -34,23 +34,28 @@ dist_imagehub_SOURCES = cmdswitch.cpp cmdswitch.h\
                         combobox.cpp combobox.h\
                         config.cpp config.h\
                         db.cpp db.h\
+                        editnotesdialog.cpp editnotesdialog.h\
                         editsettingsdialog.cpp editsettingsdialog.h\
                         imagehub.cpp imagehub.h\
                         imagesmodel.cpp imagesmodel.h\
                         importimagedialog.cpp importimagedialog.h\
                         listdialog.cpp listdialog.h\
                         listimagesdialog.cpp listimagesdialog.h\
-                        sqltablemodel.cpp sqltablemodel.h
+                        settings.cpp settings.h\
+                        sqltablemodel.cpp sqltablemodel.h\
+                        tableview.cpp tableview.h
 
 nodist_imagehub_SOURCES = moc_combobox.cpp\
                           moc_db.cpp\
+                          moc_editnotesdialog.cpp\
                           moc_editsettingsdialog.cpp\
                           moc_imagehub.cpp\
                           moc_imagesmodel.cpp\
                           moc_importimagedialog.cpp\
                           moc_listdialog.cpp\
                           moc_listimagesdialog.cpp\
-                          moc_sqltablemodel.cpp
+                          moc_sqltablemodel.cpp\
+                          moc_tableview.cpp
 
 imagehub_LDADD = @QT4GUI_LIBS@ @OPENSSL_LIBS@
 

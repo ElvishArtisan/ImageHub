@@ -27,6 +27,7 @@
 #include "cmdswitch.h"
 #include "db.h"
 #include "imagehub.h"
+#include "settings.h"
 
 MainWidget::MainWidget(QWidget *parent)
   : QMainWindow(parent)
@@ -191,6 +192,7 @@ bool MainWidget::CheckSchema()
       "ID integer primary key auto_increment,"+
       "FILENAME char(255) unique not null,"+
       "TYPE int not null,"+
+      "ORIGIN_DATETIME datetime not null,"+
       "SIZE int,"+
       "SHA1_HASH char(40),"+
       "NOTES text,"+
@@ -205,6 +207,7 @@ bool MainWidget::CheckSchema()
       "ID integer primary key auto_increment,"+
       "DIRECTORY char(255) unique not null,"+
       "TYPE int not null,"+
+      "ORIGIN_DATETIME datetime not null,"+
       "NOTES text,"+
       "index DIRECTORY_IDX(DIRECTORY),"+
       "index TYPE_IDX(TYPE))"+
